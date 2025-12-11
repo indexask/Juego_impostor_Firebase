@@ -28,7 +28,6 @@ const db = getFirestore(app);
 const categorias = {
     UrbanoChile: ["Cris MJ", "Pailita", "Young Cister", "Polimá Westcoast", "Pablo Chill-E", "Marcianeke", "El Jordan 23", "Jere Klein", "Julianno Sosa", "Standly", "King Savagge", "Ak4:20", "FloyyMenor", "DrefQuila", "Princesa Alba"],
     UrbanoMundial: ["Bad Bunny", "Daddy Yankee", "Karol G", "J Balvin", "Anuel AA", "Feid (Ferxxo)", "Rauw Alejandro", "Maluma", "Ozuna", "Arcángel", "Nicky Jam", "Wisin & Yandel", "Don Omar", "Myke Towers", "Bizarrap"],
-    ArtistasMix: ["Violeta Parra", "Víctor Jara", "Jorge González", "Mon Laferte", "Beto Cuevas", "Myriam Hernández", "Los Jaivas", "Los Bunkers", "Los Tres", "Stefan Kramer", "Felipe Camiroaga", "Pedro Pascal", "Don Francisco", "31 Minutos"],
     Paises: ["Chile", "Argentina", "Perú", "Brasil", "Colombia", "Venezuela", "México", "Estados Unidos", "España", "Francia", "Italia", "Alemania", "Inglaterra", "Rusia", "China", "Japón", "Corea del Sur", "Egipto", "India"],
     Animales: ["Perro", "Gato", "León", "Tigre", "Elefante", "Jirafa", "Mono", "Oso Panda", "Canguro", "Pingüino", "Delfín", "Tiburón", "Ballena", "Águila", "Loro", "Serpiente", "Cocodrilo", "Tortuga", "Rana", "Caballo"],
     Objetos: ["Silla", "Mesa", "Lápiz", "Teléfono", "Cuchara", "Tenedor", "Vaso", "Plato", "Cama", "Reloj", "Llave", "Zapato", "Computador", "Cuaderno", "Mochila", "Botella", "Control Remoto", "Escoba", "Toalla", "Tijeras"],
@@ -38,7 +37,6 @@ const categorias = {
 const nombresBonitos = {
     UrbanoChile: "🔥 Urbano CL",
     UrbanoMundial: "🌍 Urbano Mix",
-    ArtistasMix: "🇨🇱 Artistas Mix",
     Paises: "✈️ Países",
     Animales: "🦁 Animales",
     Objetos: "📦 Objetos",
