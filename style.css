@@ -1,0 +1,228 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    color: white;
+
+    /* FONDO ALERTA / PELIGRO */
+    background: linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #480048);
+    background-size: 400% 400%;
+    animation: dangerVibe 8s ease infinite;
+
+    /* Configuración de posición (NO BORRAR) */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    margin: 0;
+    text-align: center;
+}
+
+@keyframes dangerVibe {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* --- CONTENEDORES DE LAS PANTALLAS --- */
+.screen {
+    display: none; /* Oculto por defecto */
+    
+    /* FONDO DE "VIDRIO OSCURO" */
+    background-color: rgba(0, 0, 0, 0.85); /* Negro al 85% de opacidad */
+    backdrop-filter: blur(10px); /* Desenfoca el fondo animado detrás */
+    
+    /* BORDES Y SOMBRAS */
+    border-radius: 25px; /* Bordes muy redondos */
+    border: 1px solid rgba(255, 255, 255, 0.1); /* Borde blanco muy fino */
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6); /* Sombra fuerte para dar profundidad */
+    
+    /* ESPACIADO Y TAMAÑO */
+    padding: 30px;
+    width: 90%;       /* Ocupa casi todo el ancho en celular */
+    max-width: 400px; /* Pero no se hace gigante en PC */
+    box-sizing: border-box;
+}
+
+/* CLASE PARA MOSTRAR LA PANTALLA ACTIVA */
+.screen.active {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0px; /* Espacio automático entre botones y textos */
+    
+    /* Pequeña animación de entrada */
+    animation: popIn 0.3s ease-out;
+}
+
+/* ANIMACIÓN DE ENTRADA (HACE QUE LA TARJETA SALTE AL APARECER) */
+@keyframes popIn {
+    0% { transform: scale(0.9); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+h1, h2 { margin-bottom: 20px; }
+
+hr {
+    border: 0;
+    border-top: 1px solid rgba(255,255,255,0.1);
+    margin: 20px 0;
+}
+
+button {
+    padding: 12px 24px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    margin: 10px;
+    transition: background 0.3s;
+}
+button:hover { background-color: #c0392b; }
+button:disabled { background-color: #95a5a6; cursor: not-allowed; }
+
+.btn-start {
+    width: 100%; 
+    background-color: #27ae60;
+}
+.btn-start:hover { background-color: #219150; }
+
+input, select {
+    padding: 10px;
+    border-radius: 5px;
+    border: none;
+    margin: 5px;
+    font-size: 16px;
+}
+#impostorCount { width: 50px; }
+
+/* PANTALLAS (OCULTAR/MOSTRAR) */
+.screen { display: none; width: 90%; max-width: 400px; }
+.active { display: block; }
+
+/* LISTA DE JUGADORES */
+#playerList {
+    list-style: none;
+    padding: 0;
+    text-align: left;
+}
+#playerList li {
+    background: rgba(255,255,255,0.1);
+    margin: 5px 0;
+    padding: 8px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* TARJETA MAGICA (FLIP CARD) */
+.highlight-name { color: #f1c40f; }
+
+.card-container {
+    perspective: 1000px;
+    width: 300px;
+    height: 400px;
+    margin: 20px auto;
+    cursor: pointer;
+    /* Evitar selección de texto en móvil */
+    -webkit-tap-highlight-color: transparent;
+    user-select: none; 
+}
+
+.card {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 0.3s;
+}
+
+/* Clase que activa el giro */
+.card.flipped {
+    transform: rotateY(180deg);
+}
+
+.card-face {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border-radius: 15px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+    font-size: 24px;
+    font-weight: bold;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.card-front {
+    background: linear-gradient(135deg, #3498db, #2980b9);
+    color: white;
+}
+
+.card-back {
+    background: linear-gradient(135deg, #f1c40f, #f39c12);
+    color: #2c3e50;
+    transform: rotateY(180deg);
+}
+
+.instruction {
+    font-size: 14px;
+    opacity: 0.8;
+    margin-top: 10px;
+}
+
+.role-text {
+    font-size: 32px;
+    margin-top: 20px;
+}
+
+.impostor-text { color: #c0392b; font-weight: 900; }
+.civilian-text { color: #2c3e50; }
+
+#startingPlayer {
+    font-size: 40px; 
+    color: #e74c3c;
+}
+/* ESTILOS NUEVOS PARA CATEGORÍAS */
+.categories-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 15px;
+}
+
+.category-tag {
+    background-color: #8e44ad;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+.category-tag span {
+    margin-left: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    background: rgba(0,0,0,0.2);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.category-tag span:hover {
+    background: rgba(0,0,0,0.4);
+}

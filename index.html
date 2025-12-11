@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego del Impostor Online</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div id="screen-login" class="screen active">
+        <h1>🕵️ Impostor Online</h1>
+        <input type="text" id="playerName" placeholder="Tu Nombre (Ej: Juan)" maxlength="10">
+        
+        <br><br>
+        <button onclick="window.createRoom()" class="btn-start">👑 CREAR NUEVA SALA</button>
+        
+        <hr>
+        
+        <input type="text" id="roomCodeInput" placeholder="Código de Sala (Ej: ABCD)" style="text-transform:uppercase;">
+        <button onclick="window.joinRoom()">🚀 UNIRSE A SALA</button>
+    </div>
+
+    <div id="screen-lobby" class="screen">
+        <h3>Sala: <span id="lobbyCode" style="color:#f1c40f; font-size: 40px;">...</span></h3>
+        <p>Esperando jugadores...</p>
+        
+        <ul id="lobbyPlayerList"></ul>
+
+        <div id="hostControls" style="display:none;">
+            <hr>
+            <label>Impostores:</label>
+            <input type="number" id="impostorCount" value="1" min="1" max="3" style="width:50px;">
+            <br><br>
+            
+            <label>Temática:</label>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
+                <select id="themeSelect" style="max-width: 200px;">
+                    <option value="Todas">🌟 TODAS LAS CATEGORÍAS</option>
+                    <option value="UrbanoChile">🔥 Urbano Chile</option>
+                    <option value="UrbanoMundial">🌍 Urbano Mundial</option>
+                    <option value="ArtistasMix">🇨🇱 Artistas Mix</option>
+                    <option value="Paises">✈️ Países</option>
+                    <option value="Animales">🦁 Animales</option>
+                    <option value="Objetos">📦 Objetos</option>
+                    <option value="ComidaChilena">🍲 Comida Chilena</option>
+                </select>
+                <button onclick="window.addCategory()" style="padding: 10px 15px; background-color: #8e44ad;">+</button>
+            </div>
+
+            <div id="activeCategoriesList" class="categories-container" style="display:flex; flex-wrap:wrap; gap:5px; justify-content:center; margin-top:10px;"></div>
+            
+            <br><br>
+            <button onclick="window.startGame()" class="btn-start">🎮 INICIAR PARTIDA</button>
+        </div>
+        <p id="waitingText" style="display:none;">🔒 Esperando a que el anfitrión inicie...</p>
+        
+        <br><br>
+        <button onclick="window.exitRoom()" style="background-color: #c0392b; font-size: 12px; padding: 5px 10px;">❌ Salir de la Sala</button>
+
+    </div>
+
+    <div id="screen-game" class="screen">
+        <h2>Hola, <span id="myGameName">Jugador</span></h2>
+        
+        <div class="card-container" id="gameCard">
+            <div class="card">
+                <div class="card-face card-front">
+                    <div style="font-size: 50px;">🕵️</div>
+                    <p>Toca para ver tu rol</p>
+                </div>
+                <div class="card-face card-back">
+                    <div>TU ROL ES:</div>
+                    <div id="roleDisplay" class="role-text">???</div>
+                </div>
+            </div>
+        </div>
+        
+        <div id="gameInfo" style="margin-top: 20px; display:none;">
+            <p>Empieza preguntando:</p>
+            <h3 id="starterName" style="color:#e74c3c">...</h3>
+        </div>
+
+        <button onclick="window.resetToLobby()" style="margin-top:30px; background:#7f8c8d;">🔙 Volver al Lobby</button>
+    </div>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
