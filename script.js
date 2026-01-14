@@ -9,14 +9,13 @@ from "https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore.js";
 // 2. TU CONFIGURACIÓN
 // ==========================================
 const firebaseConfig = {
-  apiKey: "AIzaSyBFrc4J282X-v29u8PjnqP4HM3MBNs1k-0",
-  authDomain: "juegoimpostor-7f83c.firebaseapp.com",
-  projectId: "juegoimpostor-7f83c",
-  storageBucket: "juegoimpostor-7f83c.firebasestorage.app",
-  messagingSenderId: "66089987316",
-  appId: "1:66089987316:web:499854d64229e926f242a1",
-  measurementId: "G-5PJR0V74K5"
-};
+    apiKey: "AIzaSyBeuC8guy21AfzlMRLsR8pAK0-OuPYEh5U",
+    authDomain: "impostornew-3b2fe.firebaseapp.com",
+    projectId: "impostornew-3b2fe",
+    storageBucket: "impostornew-3b2fe.firebasestorage.app",
+    messagingSenderId: "670664873626",
+    appId: "1:670664873626:web:339cc8a0458f77507f7123"
+  };
 
 // Inicializar
 const app = initializeApp(firebaseConfig);
