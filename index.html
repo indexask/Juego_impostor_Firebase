@@ -341,23 +341,25 @@
                 <label>Temática:</label>
                 <div style="display: flex; justify-content: center; align-items: center; gap: 5px;">
                     <select id="themeSelect" style="max-width: 200px;">
-                        <option value="Todas">🌟 TODAS LAS CATEGORÍAS</option>
-                        <option value="UrbanoChile">🔥 Urbano Chile</option>
-                        <option value="UrbanoMundial">🌍 Urbano Mundial</option>
-                        <option value="Paises">✈️ Países</option>
-                        <option value="Animales">🦁 Animales</option>
-                        <option value="Objetos">📦 Objetos</option>
-                        <option value="ComidaChilena">🍲 Comida Chilena</option>
+                        
                     </select>
                     <button onclick="window.addCategory()"
                         style="padding: 10px 15px; background-color: #8e44ad;">+</button>
                 </div>
 
                 <div id="activeCategoriesList" class="categories-container"
-                    style="display:flex; flex-wrap:wrap; gap:5px; justify-content:center; margin-top:10px;"></div>
+                    style="display:flex; flex-wrap:wrap;justify-content:center;"></div>
 
                 <br><br>
-                <button onclick="window.startGame()" class="btn-start">🎮 INICIAR PARTIDA</button>
+                <div style="margin: 15px 0; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 10px;">
+    <label style="color: #f1c40f; font-weight: bold; cursor: pointer;">
+        <input type="checkbox" id="hintsEnabled" checked> 💡 Activar Pistas para el Impostor
+    </label>
+    <br>
+    <small style="color: #bdc3c7;">(La pista será solo la Categoría)</small>
+</div>
+
+<button onclick="window.startGame()" class="btn-start">🎮 INICIAR PARTIDA</button>
             </div>
             <p id="waitingText" style="display:none;">🔒 Esperando a que el anfitrión inicie...</p>
 
@@ -371,20 +373,23 @@
             <h2>Hola, <span id="myGameName">Jugador</span></h2>
 
             <div class="card-container" id="gameCard">
-                <div class="card">
-                    <div class="card-face card-front">
-                        <div style="font-size: 50px;">🕵️</div>
-                        <p>Toca para ver tu rol</p>
-                    </div>
-                    <div class="card-face card-back">
-                        <div>TU ROL ES:</div>
-                        <div id="roleDisplay" class="role-text">???</div>
-                    </div>
-                </div>
-            </div>
+    <div class="card">
+        <div class="card-face card-front">
+            <div style="font-size: 50px;">🕵️</div>
+            <p>Toca para ver tu rol</p>
+        </div>
+        <div class="card-face card-back">
+            <div>TU ROL ES:</div>
+            <div id="roleDisplay" class="role-text">???</div>
+            
+            <p id="impostorHint" style="color: #c0392b; font-size: 18px; margin-top: 15px; font-weight: bold; display: none;"></p>
+        
+        </div>
+    </div>
+</div>
 
             <div id="gameInfo" style=" display:none;">
-                <p>Empieza preguntando:</p>
+                <p>Empieza Con la Palabra:</p>
                 <h3 id="starterName" style="color:#e74c3c">...</h3>
             </div>
 

@@ -25,6 +25,8 @@ const db = getFirestore(app);
 // 3. DATOS (Categorías)
 // ==========================================
 const categorias = {
+    Marcas: ["Nike", "Adidas", "Jordan", "Gucci", "Apple", "Samsung", "Coca-Cola", "Pepsi", "McDonald's", "Netflix", "Disney", "Sony", "Microsoft", "Toyota", "Zara", "Michael Kors"],
+    Peliculas: ["Piratas del Caribe", "Coco", "Buscando a Nemo","Titanic", "Avatar", "Avengers", "Spiderman", "Batman", "Shrek", "Toy Story", "Harry Potter", "Star Wars", "El Padrino", "Rocky", "Rápido y Furioso", "Jurassic Park", "El Rey León"],
     UrbanoChile: ["Cris MJ", "Pailita", "Young Cister", "Polimá Westcoast", "Pablo Chill-E", "Marcianeke", "El Jordan 23", "Jere Klein", "Julianno Sosa", "Standly", "King Savagge", "Ak4:20", "FloyyMenor", "DrefQuila", "Princesa Alba"],
     UrbanoMundial: ["Bad Bunny", "Daddy Yankee", "Karol G", "J Balvin", "Anuel AA", "Feid (Ferxxo)", "Rauw Alejandro", "Maluma", "Ozuna", "Arcángel", "Nicky Jam", "Wisin & Yandel", "Don Omar", "Myke Towers", "Bizarrap"],
     Paises: ["Chile", "Argentina", "Perú", "Brasil", "Colombia", "Venezuela", "México", "Estados Unidos", "España", "Francia", "Italia", "Alemania", "Inglaterra", "Rusia", "China", "Japón", "Corea del Sur", "Egipto", "India"],
@@ -34,6 +36,8 @@ const categorias = {
 };
 
 const nombresBonitos = {
+    Marcas:"🔱Marcas✔️",
+    Peliculas:"🎥Peliculas🍿",
     UrbanoChile: "🔥 Urbano CL",
     UrbanoMundial: "🌍 Urbano Mix",
     Paises: "✈️ Países",
@@ -148,8 +152,14 @@ window.addCategory = function() {
     const value = select.value;
 
     if (value === "Todas") {
+        // Si elige todas, borramos las anteriores y metemos todas las claves
         activeCategories = Object.keys(categorias);
     } else {
+        // Si ya está "Todas" activo, lo limpiamos para permitir selección manual
+        if (activeCategories.length === Object.keys(categorias).length) {
+             activeCategories = [];
+        }
+        
         if (!activeCategories.includes(value)) {
             activeCategories.push(value);
         }
@@ -230,46 +240,101 @@ function listenToRoom() {
 }
 
 window.startGame = async function() {
-    const impostorCount = parseInt(document.getElementById('impostorCount').value);
+    const impostorInput = document.getElementById('impostorCount').value;
+    let impostorCount = parseInt(impostorInput);
+    
+    // 1. LEER ESTADO DEL BOTÓN DE PISTAS
+    const areHintsEnabled = document.getElementById('hintsEnabled').checked;
 
-    // Validar categorías
-    if (activeCategories.length === 0) return alert("¡Agrega al menos una categoría con el botón +!");
+    // VALIDACIONES
+    if (activeCategories.length === 0) return alert("¡Agrega al menos una categoría!");
 
     const roomRef = doc(db, "rooms", myRoomId);
     const roomSnap = await getDoc(roomRef);
-    const playersList = roomSnap.data().players;
+    const roomData = roomSnap.data();
+    const playersList = roomData.players;
+    const totalPlayers = playersList.length;
 
-    if (playersList.length < 3) return alert("Mínimo 3 jugadores");
+    // Historial de palabras usadas (si no existe, empezamos con array vacío)
+    let usedWordsHistory = roomData.usedWords || [];
 
-    // 1. MEZCLAR PALABRAS
-    let mixedPool = [];
+    if (totalPlayers < 3) return alert("Mínimo 3 jugadores.");
+    if (impostorCount >= totalPlayers) impostorCount = totalPlayers - 1;
+
+    // 2. CREAR POOL Y FILTRAR REPETIDAS
+    let availablePool = [];
+    let possibleCategories = []; // Para saber de qué categoría vino la palabra
+
     activeCategories.forEach(catKey => {
-        if (categorias[catKey]) mixedPool = mixedPool.concat(categorias[catKey]);
+        if (categorias[catKey]) {
+            // Filtramos: Solo agregamos palabras que NO estén en el historial
+            const wordsInCat = categorias[catKey].filter(word => !usedWordsHistory.includes(word));
+            
+            wordsInCat.forEach(w => {
+                availablePool.push({ word: w, catKey: catKey });
+            });
+        }
     });
 
-    if (mixedPool.length === 0) return alert("Error cargando palabras");
+    // 3. LOGICA DE RESET AUTOMÁTICO
+    // Si ya usamos todas las palabras de las categorías seleccionadas, limpiamos el historial
+    if (availablePool.length === 0) {
+        alert("¡Se acabaron las palabras nuevas! Reiniciando historial de palabras...");
+        usedWordsHistory = []; // Limpiamos localmente
+        
+        // Volvemos a llenar el pool completo
+        activeCategories.forEach(catKey => {
+            if (categorias[catKey]) {
+                categorias[catKey].forEach(w => {
+                    availablePool.push({ word: w, catKey: catKey });
+                });
+            }
+        });
+    }
 
-    const secretWord = mixedPool[Math.floor(Math.random() * mixedPool.length)];
+    // 4. ELEGIR PALABRA SECRETA
+    const selection = availablePool[Math.floor(Math.random() * availablePool.length)];
+    const secretWord = selection.word;
+    const categoryName = nombresBonitos[selection.catKey] || selection.catKey;
 
-    // 2. REPARTIR ROLES
-    let roles = Array(playersList.length).fill(secretWord);
-    let assigned = 0;
-    while (assigned < impostorCount) {
-        let r = Math.floor(Math.random() * playersList.length);
-        if (roles[r] !== "IMPOSTOR") {
-            roles[r] = "IMPOSTOR";
-            assigned++;
-        }
+    // 5. ASIGNAR ROLES (Shuffle)
+    let rolesArray = [];
+    for (let i = 0; i < impostorCount; i++) rolesArray.push("IMPOSTOR");
+    while (rolesArray.length < totalPlayers) rolesArray.push(secretWord);
+
+    // Fisher-Yates Shuffle
+    for (let i = rolesArray.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [rolesArray[i], rolesArray[j]] = [rolesArray[j], rolesArray[i]];
     }
 
     let rolesMap = {};
-    playersList.forEach((p, i) => rolesMap[p.name] = roles[i]);
+    playersList.forEach((p, i) => rolesMap[p.name] = rolesArray[i]);
     const starter = playersList[Math.floor(Math.random() * playersList.length)].name;
 
-    await updateDoc(roomRef, {
+    // 6. ACTUALIZAR FIREBASE
+    // Usamos 'arrayUnion' para agregar la palabra al historial sin borrar lo anterior
+    // Si reiniciamos el historial (paso 3), deberíamos haberlo limpiado, pero para simplificar,
+    // en la próxima ronda updateDoc lo manejará.
+    
+    let updatePayload = {
         status: "playing",
-        gameData: { roles: rolesMap, starter: starter, word: secretWord }
-    });
+        gameData: { 
+            roles: rolesMap, 
+            starter: starter,
+            hintsEnabled: areHintsEnabled, // Guardamos si se activaron o no
+            hint: categoryName // La pista es SOLO la categoría
+        }
+    };
+
+    // Si tuvimos que reiniciar el historial porque estaba lleno
+    if (availablePool.length === 0) {
+        updatePayload.usedWords = [secretWord]; // Reseteamos en la BD
+    } else {
+        updatePayload.usedWords = arrayUnion(secretWord); // Agregamos al historial existente
+    }
+
+    await updateDoc(roomRef, updatePayload);
 };
 
 function setupGameScreen(gameData) {
@@ -278,12 +343,23 @@ function setupGameScreen(gameData) {
 
     const myRole = gameData.roles[myName];
     const roleDisplay = document.getElementById('roleDisplay');
-    
+    const hintDisplay = document.getElementById('impostorHint'); // Asegúrate de haber creado este <p> en el HTML
+
     roleDisplay.className = "role-text";
     roleDisplay.innerText = myRole; 
+    
+    // Reset visual
+    hintDisplay.style.display = 'none';
 
     if (myRole === "IMPOSTOR") {
         roleDisplay.classList.add("impostor-text");
+        
+        // CONDICIÓN DOBLE: ¿Soy impostor? Y ADEMÁS ¿Están las pistas activadas?
+        if (gameData.hintsEnabled) {
+            hintDisplay.style.display = 'block';
+            hintDisplay.innerText = `(Pista: ${gameData.hint})`;
+        }
+        
     } else {
         roleDisplay.classList.add("civilian-text");
     }
@@ -312,3 +388,19 @@ if (cardContainer) {
     cardContainer.addEventListener('touchstart', (e) => { e.preventDefault(); cardInner.classList.add('flipped'); }, { passive: false });
     cardContainer.addEventListener('touchend', () => cardInner.classList.remove('flipped'));
 }
+
+// Función para llenar el select automáticamente basado en tu objeto 'categorias'
+function llenarSelectAutomaticamente() {
+    const select = document.getElementById('themeSelect');
+    // Mantenemos solo la opción "Todas"
+    select.innerHTML = '<option value="Todas">🌟 TODAS LAS CATEGORÍAS</option>';
+    
+    // Recorremos las claves de tu objeto
+    Object.keys(categorias).forEach(key => {
+        const nombreVisible = nombresBonitos[key] || key; // Usa el nombre bonito si existe, si no, usa la clave
+        select.innerHTML += `<option value="${key}">${nombreVisible}</option>`;
+    });
+}
+
+// Llama a esta función cuando cargue la página o cuando crees la sala
+llenarSelectAutomaticamente();
